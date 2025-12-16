@@ -31,28 +31,37 @@ resize();
 
 /* ==== WRAPPED CANDY PIXEL MAP ==== */
 const candy = [
-  "   ##     ##   ",
-  " ###### ###### ",
-  "##############",
-  "##############",
-  "##############",
-  " ###### ###### ",
-  "   ##     ##   "
+  "   ##      ##   ",
+  " #####    ##### ",
+  "###############",
+  "###############",
+  " #####    ##### ",
+  "   ##      ##   "
 ];
-
 function drawCandy(x, y, scale, glow=true) {
   const px = scale;
 
   if (glow) {
-    ctx.shadowColor = "#ff6fae";
-    ctx.shadowBlur = 30;
+    ctx.shadowColor = "#ff77b7";
+    ctx.shadowBlur = 35;
   }
 
   candy.forEach((row, r) => {
     [...row].forEach((p, c) => {
       if (p !== " ") {
-        ctx.fillStyle =
-          r === 3 && c > 4 && c < 9 ? "#ffd1e6" : "#ff5fa2";
+        // outline
+        ctx.fillStyle = "#ff3f8e";
+
+        // glossy center
+        if (r === 2 && c > 6 && c < 9) {
+          ctx.fillStyle = "#ffe0ee";
+        }
+
+        // inner body
+        if (r >= 1 && r <= 4 && c > 2 && c < 13) {
+          ctx.fillStyle = "#ff8fc2";
+        }
+
         ctx.fillRect(
           x + c * px,
           y + r * px,
