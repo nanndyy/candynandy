@@ -3,42 +3,42 @@
 <head>
 <meta charset="UTF-8" />
 <title>Pixel Candy</title>
+
 <style>
   body {
     margin: 0;
     background: #0b0b0b;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    overflow: hidden;
   }
+
   canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     image-rendering: pixelated;
+    filter: drop-shadow(0 0 18px rgba(255,120,170,0.35));
+  }
+
+  #bg {
+    position: fixed;
+    inset: 0;
   }
 </style>
 </head>
 <body>
 
-<canvas id="candy" width="32" height="32"></canvas>
+<canvas id="bg"></canvas>
+<canvas id="main" width="32" height="32"></canvas>
 
 <script>
-const c = document.getElementById("candy");
-const ctx = c.getContext("2d");
-
-// scale up (pixel art zoom)
-const scale = 10;
-c.style.width = c.width * scale + "px";
-c.style.height = c.height * scale + "px";
-
-// colors
+// ================== PIXEL CANDY MAP ==================
 const O = null;
-const P = "#ff4f8b";   // outline
-const M = "#ff8fb8";   // mid pink
-const L = "#ffd0e0";   // light highlight
+const P = "#ff4f8b";
+const M = "#ff8fb8";
+const L = "#ffd0e0";
 
-// 32x32 pixel map (hand-designed)
-const candy = [
-[O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O],
+const candyMap = [
 [O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O],
 [O,O,O,O,O,O,O,O,O,O,O,O,P,P,P,P,P,P,P,P,O,O,O,O,O,O,O,O,O,O,O,O],
 [O,O,O,O,O,O,O,O,O,P,P,M,M,M,M,M,M,M,M,M,P,P,O,O,O,O,O,O,O,O,O,O],
@@ -55,18 +55,78 @@ const candy = [
 [O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O],
 [O,O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O],
 [O,O,O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O,O],
-[O,O,O,O,O,O,P,P,M,M,M,M,M,M,M,M,M,M,M,M,M,P,P,O,O,O,O,O,O,O,O,O],
 ];
 
-// draw pixels
-for (let y = 0; y < candy.length; y++) {
-  for (let x = 0; x < candy[y].length; x++) {
-    if (candy[y][x]) {
-      ctx.fillStyle = candy[y][x];
-      ctx.fillRect(x, y, 1, 1);
+// ================== DRAW FUNCTION ==================
+function drawCandy(ctx, x, y, size) {
+  for (let py = 0; py < candyMap.length; py++) {
+    for (let px = 0; px < candyMap[py].length; px++) {
+      if (candyMap[py][px]) {
+        ctx.fillStyle = candyMap[py][px];
+        ctx.fillRect(
+          x + px * size,
+          y + py * size,
+          size,
+          size
+        );
+      }
     }
   }
 }
+
+// ================== MAIN CANDY ==================
+const mainCanvas = document.getElementById("main");
+const mainCtx = mainCanvas.getContext("2d");
+
+const SCALE = 8;
+mainCanvas.style.width = 32 * SCALE + "px";
+mainCanvas.style.height = 32 * SCALE + "px";
+
+let floatT = 0;
+
+// ================== BACKGROUND FALLING CANDIES ==================
+const bg = document.getElementById("bg");
+const bgCtx = bg.getContext("2d");
+
+function resize() {
+  bg.width = window.innerWidth;
+  bg.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const falling = Array.from({ length: 14 }, () => ({
+  x: Math.random() * bg.width,
+  y: Math.random() * bg.height,
+  speed: 0.4 + Math.random() * 0.6,
+  size: 2 + Math.random() * 2
+}));
+
+// ================== ANIMATION LOOP ==================
+function animate() {
+  requestAnimationFrame(animate);
+
+  // ---- background ----
+  bgCtx.clearRect(0,0,bg.width,bg.height);
+  falling.forEach(c => {
+    drawCandy(bgCtx, c.x, c.y, c.size);
+    c.y += c.speed;
+    if (c.y > bg.height + 100) {
+      c.y = -100;
+      c.x = Math.random() * bg.width;
+    }
+  });
+
+  // ---- main candy ----
+  mainCtx.clearRect(0,0,32,32);
+  floatT += 0.02;
+  mainCanvas.style.transform =
+    `translate(-50%, -50%) translateY(${Math.sin(floatT) * 12}px)`;
+
+  drawCandy(mainCtx, 0, 0, 1);
+}
+
+animate();
 </script>
 
 </body>
