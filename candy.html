@@ -23,35 +23,40 @@
 
   .label {
     font-size: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     opacity: 0.6;
   }
 
   .candy {
-    width: 12px;
-    height: 12px;
-    background: #ff7eb6;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: #ff86b8;
+
     box-shadow:
-      -12px 0 #ff4d94,
-      -24px 0 #ff4d94,
-      12px 0 #ff4d94,
-      24px 0 #ff4d94,
+      /* core glow */
+      0 0 0 10px #ff86b8,
 
-      0 -12px #ff9fcb,
-      0 12px #ff9fcb,
+      /* left wrap */
+      -18px 0 0 6px #ff4f9a,
+      -26px 0 0 4px #ff4f9a,
 
-      -12px -12px #ff6fae,
-      12px 12px #ff6fae;
+      /* right wrap */
+      18px 0 0 6px #ff4f9a,
+      26px 0 0 4px #ff4f9a,
 
-    transform: scale(6);
-    image-rendering: pixelated;
-    animation: float 4s ease-in-out infinite;
+      /* highlights */
+      -6px -6px 0 2px #ffd1e6,
+      6px 6px 0 2px #ff6faa;
+
+    transform: scale(5);
+    animation: float 4.5s ease-in-out infinite;
   }
 
   @keyframes float {
-    0%   { transform: scale(6) translateY(0); }
-    50%  { transform: scale(6) translateY(-6px); }
-    100% { transform: scale(6) translateY(0); }
+    0%   { transform: scale(5) translateY(0); }
+    50%  { transform: scale(5) translateY(-8px); }
+    100% { transform: scale(5) translateY(0); }
   }
 </style>
 </head>
