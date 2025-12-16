@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust Me</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    button {
+      background: linear-gradient(135deg, #b46cff, #ff6cc9);
+      border: none;
+      padding: 14px 28px;
+      font-size: 18px;
+      border-radius: 14px;
+      color: black;
+      font-weight: 600;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+
+<body>
+  <button onclick="go()">Trust me</button>
+
+  <script>
+    function go() {
+      window.location.href = "candy.html";
+    }
+  </script>
+</body>
+</html>
