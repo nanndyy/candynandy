@@ -1,92 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pixel Candy</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body{
-    margin:0;
-    background:#0b0b0b;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  body {
+    margin: 0;
+    background: #0e0e0e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-.candy{
-  width:280px;
-  height:280px;
-  transform: scale(1.2);
-    image-rendering: pixelated;
-    background:
-      repeating-linear-gradient(
-        90deg,
-        #ff77aa 0 20px,
-        #ffb3d9 20px 40px
-      );
-    border-radius:12px;
+  .scene {
+    text-align: center;
+    color: #aaa;
+  }
+
+  .label {
+    font-size: 14px;
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+
+  .candy {
+    width: 12px;
+    height: 12px;
+    background: #ff7eb6;
     box-shadow:
-    filter: saturate(1.2) contrast(1.1);
-      0 0 20px rgba(255,120,180,0.4),
-      inset 0 0 0 8px #fff;
-    animation: float 3s ease-in-out infinite;
+      -12px 0 #ff4d94,
+      -24px 0 #ff4d94,
+      12px 0 #ff4d94,
+      24px 0 #ff4d94,
+
+      0 -12px #ff9fcb,
+      0 12px #ff9fcb,
+
+      -12px -12px #ff6fae,
+      12px 12px #ff6fae;
+
+    transform: scale(6);
+    image-rendering: pixelated;
+    animation: float 4s ease-in-out infinite;
   }
 
-  @keyframes float{
-    0%,100%{ transform:translateY(0); }
-    50%{ transform:translateY(-12px); }
-  }
-
-  .hint{
-    position:fixed;
-    bottom:24px;
-    font-size:12px;
-    opacity:0.5;
-    color:white;
+  @keyframes float {
+    0%   { transform: scale(6) translateY(0); }
+    50%  { transform: scale(6) translateY(-6px); }
+    100% { transform: scale(6) translateY(0); }
   }
 </style>
 </head>
 
 <body>
-
-<div class="candy"></div>
-<div class="hint">tap anywhere</div>
-
-<script>
-  let started = false;
-
-  document.body.addEventListener("click", () => {
-    if(started) return;
-    started = true;
-
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = "sine";
-    osc.frequency.value = 220;
-
-    gain.gain.value = 0.02;
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start();
-
-    // slow dreamy movement
-    setInterval(()=>{
-      osc.frequency.setTargetAtTime(
-        180 + Math.random()*80,
-        ctx.currentTime,
-        1.5
-      );
-    }, 2000);
-  });
-</script>
-
+  <div class="scene">
+    <div class="label">pixel candy</div>
+    <div class="candy"></div>
+  </div>
 </body>
 </html>
