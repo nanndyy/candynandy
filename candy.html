@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8" />
 <title>Pixel Candy</title>
 <style>
   body {
@@ -12,41 +12,62 @@
     align-items: center;
     height: 100vh;
   }
-
-  svg {
-    width: 140px;
-    filter: drop-shadow(0 0 25px rgba(255,120,170,0.35));
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
-    100% { transform: translateY(0); }
+  canvas {
+    image-rendering: pixelated;
   }
 </style>
 </head>
-
 <body>
-<svg viewBox="0 0 200 100">
-  <!-- left twist -->
-  <path d="M20 50 Q5 35 20 20 Q40 50 20 80 Q5 65 20 50"
-        fill="#ff4f9a"/>
 
-  <!-- candy body -->
-  <rect x="40" y="25" rx="25" ry="25"
-        width="120" height="50"
-        fill="#ff86b8"/>
+<canvas id="candy" width="32" height="32"></canvas>
 
-  <!-- highlight -->
-  <rect x="60" y="32" rx="15" ry="15"
-        width="40" height="36"
-        fill="#ffd1e6"
-        opacity="0.6"/>
+<script>
+const c = document.getElementById("candy");
+const ctx = c.getContext("2d");
 
-  <!-- right twist -->
-  <path d="M180 50 Q195 35 180 20 Q160 50 180 80 Q195 65 180 50"
-        fill="#ff4f9a"/>
-</svg>
+// scale up (pixel art zoom)
+const scale = 10;
+c.style.width = c.width * scale + "px";
+c.style.height = c.height * scale + "px";
+
+// colors
+const O = null;
+const P = "#ff4f8b";   // outline
+const M = "#ff8fb8";   // mid pink
+const L = "#ffd0e0";   // light highlight
+
+// 32x32 pixel map (hand-designed)
+const candy = [
+[O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,O,O,O,O,O,O,P,P,P,P,P,P,P,P,O,O,O,O,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,O,O,O,P,P,M,M,M,M,M,M,M,M,M,P,P,O,O,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,O,P,M,M,M,M,M,L,L,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,P,M,M,M,M,L,L,L,L,L,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O],
+[O,O,O,O,O,P,M,M,M,M,L,L,L,L,L,L,L,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O],
+[O,O,O,O,P,M,M,M,M,M,L,L,L,L,L,L,L,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O],
+[O,O,O,P,M,M,M,M,M,M,M,L,L,L,L,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O],
+[O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O],
+[O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O],
+[O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O],
+[O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O],
+[O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O],
+[O,O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O],
+[O,O,O,O,O,P,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,P,O,O,O,O,O,O,O,O],
+[O,O,O,O,O,O,P,P,M,M,M,M,M,M,M,M,M,M,M,M,M,P,P,O,O,O,O,O,O,O,O,O],
+];
+
+// draw pixels
+for (let y = 0; y < candy.length; y++) {
+  for (let x = 0; x < candy[y].length; x++) {
+    if (candy[y][x]) {
+      ctx.fillStyle = candy[y][x];
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+}
+</script>
+
 </body>
 </html>
