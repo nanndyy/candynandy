@@ -2,125 +2,94 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Pixel Candy</title>
 
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    background: #0b0b0f;
-    height: 100%;
+    background: #000;
     overflow: hidden;
+    height: 100%;
     font-family: system-ui;
   }
 
-  /* ===== CENTER CANDY ===== */
+  /* CENTER BIG CANDY */
   .center {
-    position: absolute;
+    position: fixed;
     inset: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     pointer-events: none;
   }
 
-  .float {
-    animation: float 6s ease-in-out infinite;
-  }
-
+  /* FLOAT ANIMATION */
   @keyframes float {
-    0%,100% { transform: translateY(0); }
+    0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-20px); }
   }
 
-  /* ===== CANDY SHAPE ===== */
+  /* FALLING */
+  @keyframes fall {
+    from { transform: translateY(-120px); opacity: 0; }
+    to { transform: translateY(110vh); opacity: 1; }
+  }
+
+  /* PIXEL CANDY BASE */
   .candy {
-    display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    gap: 2px;
-    filter: drop-shadow(0 0 20px #ff6fae);
+    width: 96px;
+    height: 64px;
+    image-rendering: pixelated;
+    background:
+      /* left wrap */
+      linear-gradient(#ff4f8b 0 0) 0 24px / 16px 16px no-repeat,
+      linear-gradient(#ff6fa3 0 0) 16px 16px / 16px 32px no-repeat,
+
+      /* center */
+      linear-gradient(#ff9fc4 0 0) 32px 16px / 32px 32px no-repeat,
+      linear-gradient(#ffd1e3 0 0) 48px 24px / 8px 8px no-repeat,
+
+      /* right wrap */
+      linear-gradient(#ff6fa3 0 0) 64px 16px / 16px 32px no-repeat,
+      linear-gradient(#ff4f8b 0 0) 80px 24px / 16px 16px no-repeat;
+    filter: drop-shadow(0 0 12px rgba(255,120,180,.8));
   }
 
   .big {
-    width: 220px;
+    transform: scale(2.2);
+    animation: float 6s ease-in-out infinite;
   }
 
-  .small {
-    width: 90px;
-  }
-
-  .px {
-    aspect-ratio: 1;
-    background: transparent;
-  }
-
-  .p1 { background:#ff4f8b; }
-  .p2 { background:#ff89b6; }
-  .p3 { background:#ffd1e3; }
-
-  /* ===== FALLING CANDIES ===== */
-  .rain {
-    position: absolute;
-    top: -120px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  .drop {
+  .fall {
     position: absolute;
     animation: fall linear infinite;
-    opacity: 0.8;
-  }
-
-  @keyframes fall {
-    to {
-      transform: translateY(120vh);
-    }
+    opacity: .7;
+    transform: scale(1.2);
   }
 </style>
 </head>
 
 <body>
 
-<!-- CENTER HERO CANDY -->
 <div class="center">
-  <div class="candy big float">
-    <!-- wrapper left -->
-    <div class="px"></div><div class="px"></div><div class="px p1"></div><div class="px p2"></div><div class="px p3"></div><div class="px p2"></div><div class="px p1"></div><div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
-
-    <!-- body -->
-    <div class="px"></div><div class="px p1"></div><div class="px p2"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p2"></div><div class="px p1"></div><div class="px"></div><div class="px"></div>
-
-    <div class="px p1"></div><div class="px p2"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p3"></div><div class="px p2"></div><div class="px p1"></div><div class="px"></div>
-
-    <!-- wrapper right -->
-    <div class="px"></div><div class="px"></div><div class="px"></div><div class="px p1"></div><div class="px p2"></div><div class="px p3"></div><div class="px p2"></div><div class="px p1"></div><div class="px"></div><div class="px"></div><div class="px"></div>
-  </div>
+  <div class="candy big"></div>
 </div>
 
-<!-- FALLING CANDIES -->
-<div class="rain">
-  <!-- clone these visually -->
-  <div class="drop" style="left:10%; animation-duration:14s;">
-    <div class="candy small">
-      <div class="px p1"></div><div class="px p2"></div><div class="px p3"></div>
-    </div>
-  </div>
+<script>
+  const count = 12;
 
-  <div class="drop" style="left:40%; animation-duration:18s;">
-    <div class="candy small">
-      <div class="px p1"></div><div class="px p2"></div><div class="px p3"></div>
-    </div>
-  </div>
-
-  <div class="drop" style="left:70%; animation-duration:16s;">
-    <div class="candy small">
-      <div class="px p1"></div><div class="px p2"></div><div class="px p3"></div>
-    </div>
-  </div>
-</div>
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('div');
+    c.className = 'candy fall';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDuration = 8 + Math.random() * 10 + 's';
+    c.style.animationDelay = Math.random() * -20 + 's';
+    c.style.transform = `scale(${0.6 + Math.random()})`;
+    document.body.appendChild(c);
+  }
+</script>
 
 </body>
 </html>
