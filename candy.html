@@ -1,95 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
 <title>Pixel Candy</title>
-
 <style>
   html, body {
     margin: 0;
-    padding: 0;
-    background: #000;
+    background: #0b0b0b;
     overflow: hidden;
-    height: 100%;
-    font-family: system-ui;
   }
-
-  /* CENTER BIG CANDY */
-  .center {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-
-  /* FLOAT ANIMATION */
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-  }
-
-  /* FALLING */
-  @keyframes fall {
-    from { transform: translateY(-120px); opacity: 0; }
-    to { transform: translateY(110vh); opacity: 1; }
-  }
-
-  /* PIXEL CANDY BASE */
-  .candy {
-    width: 96px;
-    height: 64px;
+  canvas {
+    display: block;
     image-rendering: pixelated;
-    background:
-      /* left wrap */
-      linear-gradient(#ff4f8b 0 0) 0 24px / 16px 16px no-repeat,
-      linear-gradient(#ff6fa3 0 0) 16px 16px / 16px 32px no-repeat,
-
-      /* center */
-      linear-gradient(#ff9fc4 0 0) 32px 16px / 32px 32px no-repeat,
-      linear-gradient(#ffd1e3 0 0) 48px 24px / 8px 8px no-repeat,
-
-      /* right wrap */
-      linear-gradient(#ff6fa3 0 0) 64px 16px / 16px 32px no-repeat,
-      linear-gradient(#ff4f8b 0 0) 80px 24px / 16px 16px no-repeat;
-    filter: drop-shadow(0 0 12px rgba(255,120,180,.8));
-  }
-
-  .big {
-    transform: scale(2.2);
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .fall {
-    position: absolute;
-    animation: fall linear infinite;
-    opacity: .7;
-    transform: scale(1.2);
   }
 </style>
 </head>
-
 <body>
-
-<div class="center">
-  <div class="candy big"></div>
-</div>
+<canvas id="c"></canvas>
 
 <script>
-  const count = 12;
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
 
-  for (let i = 0; i < count; i++) {
-    const c = document.createElement('div');
-    c.className = 'candy fall';
-    c.style.left = Math.random() * 100 + 'vw';
-    c.style.animationDuration = 8 + Math.random() * 10 + 's';
-    c.style.animationDelay = Math.random() * -20 + 's';
-    c.style.transform = `scale(${0.6 + Math.random()})`;
-    document.body.appendChild(c);
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ==== WRAPPED CANDY PIXEL MAP ==== */
+const candy = [
+  "   ##     ##   ",
+  " ###### ###### ",
+  "##############",
+  "##############",
+  "##############",
+  " ###### ###### ",
+  "   ##     ##   "
+];
+
+function drawCandy(x, y, scale, glow=true) {
+  const px = scale;
+
+  if (glow) {
+    ctx.shadowColor = "#ff6fae";
+    ctx.shadowBlur = 30;
   }
-</script>
 
+  candy.forEach((row, r) => {
+    [...row].forEach((p, c) => {
+      if (p !== " ") {
+        ctx.fillStyle =
+          r === 3 && c > 4 && c < 9 ? "#ffd1e6" : "#ff5fa2";
+        ctx.fillRect(
+          x + c * px,
+          y + r * px,
+          px,
+          px
+        );
+      }
+    });
+  });
+
+  ctx.shadowBlur = 0;
+}
+
+/* ==== BIG FLOATING CANDY ==== */
+let t = 0;
+
+/* ==== FALLING CANDIES ==== */
+const drops = Array.from({ length: 6 }, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * -canvas.height,
+  speed: 0.3 + Math.random() * 0.4,
+  scale: 4 + Math.random() * 2
+}));
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // falling candies
+  drops.forEach(d => {
+    drawCandy(d.x, d.y, d.scale, false);
+    d.y += d.speed;
+    if (d.y > canvas.height + 50) {
+      d.y = -100;
+      d.x = Math.random() * canvas.width;
+    }
+  });
+
+  // big center candy
+  const scale = 10;
+  const cx = canvas.width / 2 - (candy[0].length * scale) / 2;
+  const cy = canvas.height / 2 - (candy.length * scale) / 2
+           + Math.sin(t) * 12;
+
+  drawCandy(cx, cy, scale, true);
+
+  t += 0.01;
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
 </body>
 </html>
